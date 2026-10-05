@@ -1,141 +1,120 @@
 # Loan Amount Prediction Using Machine Learning
+**Production-Grade Regression System & Streamlit Web Deployment**
 
-An end-to-end Machine Learning system and interactive web application developed to estimate the appropriate loan sanction amount for applicants based on financial profiles, credit history, existing liabilities, and collateral backing.
-
----
-
-## 🌟 Key Features
-- **Exploratory Data Analysis (EDA):** In-depth statistical analysis and visualizations (correlations, credit tiers, distributions).
-- **6 Regression Algorithms Implemented & Compared:**
-  1. Linear Regression
-  2. Polynomial Regression (Degree 2)
-  3. Decision Tree Regression
-  4. Random Forest Regression
-  5. Gradient Boosting Regression *(Champion Model)*
-  6. Support Vector Regression (SVR)
-- **Comparative Study:** Complete benchmark table evaluating MAE, MSE, RMSE, and R² Score.
-- **Interactive Web Application & Deployment:**
-  - Enter applicant information and receive **`Predicted Loan Amount: ₹X`**.
-  - Dynamic Credit Score slider with live CIBIL rating pill.
-  - Live FOIR (Fixed Obligation to Income Ratio) & Max Monthly EMI Capacity calculator.
-  - Multi-model comparative view for every individual applicant.
-  - Pre-filled realistic demo applicant profiles.
-- **REST API Endpoint:** `POST /api/predict` for programmatic integration.
-- **Executive Analysis & Questions Answered:** Comprehensive report addressing all underwriting questions.
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Loan--Amount--Prediction--ML-blue?logo=github)](https://github.com/harshal25-hub/Loan-Amount-Prediction-ML)
+[![Streamlit App](https://img.shields.io/badge/Deployment-Streamlit-FF4B4B?logo=streamlit)](http://127.0.0.1:8501)
+[![Dataset](https://img.shields.io/badge/Dataset-Real%20Online%20Competition%20Data-brightgreen)](#-dataset)
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python)](https://python.org)
 
 ---
 
-## 📊 Comparative Performance Summary
+## 🌟 Project Overview
+This repository contains an end-to-end Machine Learning system developed to predict sanctioned loan amounts for prospective applicants in a financial institution. Trained on a **real-world online competition dataset (30,000 records from HackerEarth / Kaggle)**, the system evaluates applicant incomes, credit scores (CIBIL), existing debt liabilities, requested tenure, and collateral asset valuations to provide real-time loan underwriting estimates in Indian Rupees (**₹**).
 
-| Rank | Model | MAE (₹) | MSE | RMSE (₹) | Test R² | Train R² |
-| :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| **#1** | **Gradient Boosting Regression** | **₹2,02,581** | **1.46e+11** | **₹3,82,446** | **0.9640** | **0.9957** |
-| **#2** | Polynomial Regression (Deg-2) | ₹2,94,499 | 2.31e+11 | ₹4,81,090 | 0.9430 | 0.9505 |
-| **#3** | Support Vector Regression (SVR) | ₹2,74,108 | 2.39e+11 | ₹4,89,285 | 0.9410 | 0.9951 |
-| **#4** | Random Forest Regression | ₹2,67,707 | 2.49e+11 | ₹4,98,741 | 0.9387 | 0.9859 |
-| **#5** | Decision Tree Regression | ₹4,47,363 | 5.47e+11 | ₹7,39,447 | 0.8653 | 0.9261 |
-| **#6** | Linear Regression | ₹5,70,825 | 7.37e+11 | ₹8,58,677 | 0.8183 | 0.8095 |
+The champion model, **Gradient Boosting Regression**, achieved an **$R^2$ score of 0.9888** and the lowest **RMSE of ₹3,91,191.33**, outperforming all other regression models.
 
 ---
 
-## 📁 Project Structure
+## 📊 6-Model Comparative Study & Benchmark
+
+All 6 algorithms were trained with scikit-learn preprocessing pipelines (`StandardScaler` + `OneHotEncoder`) and benchmarked on an unseen 20% holdout test set:
+
+| Rank | Machine Learning Algorithm | MAE (₹) | MSE (₹²) | RMSE (₹) | Test $R^2$ Score | Train $R^2$ | Status |
+| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **#1** | **Gradient Boosting Regression** | **₹2,50,815.84** | **1.53 × 10¹¹** | **₹3,91,191.33** | **0.9888** | **0.9948** | **Optimal Champion** |
+| **#2** | **Random Forest Regression** | ₹2,58,950.02 | 1.60 × 10¹¹ | ₹3,99,623.06 | 0.9883 | 0.9938 | Robust Ensemble |
+| **#3** | **Polynomial Regression (Degree-2)** | ₹2,81,828.43 | 1.85 × 10¹¹ | ₹4,30,132.33 | 0.9864 | 0.9884 | High Balance |
+| **#4** | **Decision Tree Regression** | ₹2,74,960.44 | 1.89 × 10¹¹ | ₹4,34,535.01 | 0.9861 | 0.9900 | Step Non-Linearity |
+| **#5** | **Linear Regression** | ₹3,04,394.08 | 2.08 × 10¹¹ | ₹4,56,024.85 | 0.9847 | 0.9864 | Fast Baseline |
+| **#6** | **Support Vector Regression (SVR)** | ₹3,32,929.53 | 2.86 × 10¹¹ | ₹5,34,882.84 | 0.9790 | 0.9967 | Target Scaled |
+
+---
+
+## 📁 Repository Structure
 
 ```
+├── app.py                           # Interactive Streamlit Web Application
 ├── data/
-│   ├── generate_dataset.py          # Synthetic realistic loan dataset generator
-│   └── loan_data.csv                # 5,000 application records
+│   ├── real_loan_dataset.csv        # Authentic 30,000-record online competition dataset
+│   ├── process_online_dataset.py    # Cleaning, imputation & currency conversion pipeline
+│   └── loan_data.csv                # 10,000-record clean production dataset
 ├── models/
 │   ├── best_model.joblib            # Champion Gradient Boosting Pipeline
 │   ├── gradient_boosting_regression.joblib
 │   ├── random_forest_regression.joblib
 │   ├── polynomial_regression.joblib
-│   ├── support_vector_regression.joblib
 │   ├── decision_tree_regression.joblib
 │   ├── linear_regression.joblib
-│   ├── metrics_comparison.json      # Benchmark metrics
-│   └── model_metadata.json          # Preprocessing & feature metadata
+│   ├── support_vector_regression.joblib
+│   ├── metrics_comparison.json      # Structured evaluation metrics
+│   └── model_metadata.json          # Preprocessing & categorical feature schema
 ├── src/
-│   ├── eda.py                       # Exploratory Data Analysis & visual plot generation
+│   ├── eda.py                       # Exploratory Data Analysis & visual plot generator
 │   ├── train_models.py              # Pipelines, model training, evaluation & metrics
-│   └── predict.py                   # Prediction engine, INR formatting & FOIR calculator
-├── static/
-│   ├── css/style.css                # Custom modern fintech dashboard stylesheet
-│   ├── js/app.js                    # Interactive DOM & async API integration
-│   └── images/plots/                # High-res evaluation & EDA charts
-├── templates/
-│   └── index.html                   # Dashboard UI
-├── app.py                           # Flask web server & REST API
-├── final_analysis_report.md         # Full research & analysis report
-└── README.md
+│   ├── predict.py                   # Reusable inference engine & underwriter metrics
+│   └── convert_to_pdf.py            # ReportLab script converting markdown docs to PDF
+├── plots/                           # 10 High-Resolution Analysis & Evaluation Charts
+│   ├── correlation_heatmap.png
+│   ├── loan_amount_distribution.png
+│   ├── request_vs_sanctioned.png
+│   ├── credit_score_impact.png
+│   ├── income_asset_impact.png
+│   ├── location_defaults_impact.png
+│   ├── model_comparison_metrics.png
+│   ├── actual_vs_predicted.png
+│   ├── residuals_distribution.png
+│   └── feature_importance.png
+├── ml_topics_explanation.pdf        # Doc 1: Comprehensive ML Topics (PDF)
+├── project_files_explanation.pdf    # Doc 2: Comprehensive Project Files (PDF)
+├── ml_models_explanation.pdf        # Doc 3: Comprehensive ML Models (PDF)
+├── ml_topics_explanation.md         # Doc 1: Markdown Source
+├── project_files_explanation.md     # Doc 2: Markdown Source
+├── ml_models_explanation.md         # Doc 3: Markdown Source
+├── final_analysis_report.md         # Complete research & underwriter analysis report
+└── README.md                        # Documentation Manual
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 How to Run the Project Locally
 
-### 1. Requirements
-Ensure Python 3.10+ is installed:
+### 1. Clone the GitHub Repository
 ```bash
-pip install numpy pandas scikit-learn matplotlib seaborn joblib flask
+git clone https://github.com/harshal25-hub/Loan-Amount-Prediction-ML.git
+cd Loan-Amount-Prediction-ML
 ```
 
-### 2. Run Exploratory Data Analysis
+### 2. Install Required Packages
 ```bash
-python3 src/eda.py
+pip install -r <(echo "streamlit scikit-learn pandas numpy matplotlib seaborn joblib reportlab fpdf2 requests")
 ```
 
-### 3. Train and Benchmark the 6 Models
+### 3. Launch the Streamlit Web Application
 ```bash
-python3 src/train_models.py
-```
-
-### 4. Launch the Web Application
-```bash
-python3 app.py
+streamlit run app.py
 ```
 Open your browser and navigate to:
 ```
-http://127.0.0.1:5001
+http://localhost:8501
 ```
 
 ---
 
-## 🔌 REST API Usage
+## 📑 3 Comprehensive Educational Documents (with PDFs)
 
-### Endpoint: `POST /api/predict`
-**Request Payload:**
-```json
-{
-  "ApplicantIncome": 85000,
-  "CoapplicantIncome": 35000,
-  "EmploymentType": "Salaried",
-  "WorkExperience": 5.0,
-  "Education": "Graduate",
-  "CreditScore": 770,
-  "ExistingLiabilities": 14000,
-  "AssetValue": 5000000,
-  "LoanTerm": 240,
-  "PropertyArea": "Urban",
-  "Dependents": 1,
-  "MaritalStatus": "Married",
-  "model_name": "Gradient Boosting Regression"
-}
-```
+This repository includes 3 in-depth educational documents explaining **HOW, WHY, and WHEN** in simple English:
 
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "formatted_loan_amount": "₹50,11,855",
-    "formatted_loan_words": "50.12 Lakh",
-    "predicted_amount": 5011855,
-    "model_used": "Gradient Boosting Regression",
-    "risk_category": "Prime / Excellent (Fast-Track Approval)",
-    "current_foir_percent": "11.7%",
-    "max_monthly_emi_capacity": "₹46,000",
-    "formatted_total_income": "₹1,20,000",
-    "all_model_predictions": { ... }
-  }
-}
-```
+1. **[Doc 1: ML Topics Explanation](ml_topics_explanation.md)** ([Download PDF](ml_topics_explanation.pdf)):
+   - Supervised Learning, Regression vs Classification
+   - Feature Scaling, One-Hot Encoding, Missing Value Imputation
+   - Train-Test Split, Bias-Variance Tradeoff
+   - Evaluation Metrics (MAE, MSE, RMSE, R²)
+   - Pipelines, Model Serialization & Deployment
+
+2. **[Doc 2: Project Files Explanation](project_files_explanation.md)** ([Download PDF](project_files_explanation.pdf)):
+   - Detailed walkthrough of every single file in the codebase.
+   - Code structure, inputs, outputs, and maintenance guidelines.
+
+3. **[Doc 3: ML Models Explanation](ml_models_explanation.md)** ([Download PDF](ml_models_explanation.pdf)):
+   - Mathematical and intuitive guide to all 6 regression algorithms.
+   - Pros, cons, production guidance, and comparative performance rankings.
