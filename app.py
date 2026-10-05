@@ -66,7 +66,7 @@ st.sidebar.image("https://img.icons8.com/fluency/96/bank-building.png", width=70
 st.sidebar.title("Navigation")
 menu = st.sidebar.radio(
     "Choose View:",
-    ["💼 Loan Predictor", "📊 4-Model Benchmark", "📈 Exploratory Data Analysis", "📑 Executive Analysis & Q&A", "📥 Download PDF Documents"]
+    ["💼 Loan Predictor", "📊 4-Model Benchmark", "📈 Exploratory Data Analysis"]
 )
 
 st.sidebar.markdown("---")
@@ -351,64 +351,4 @@ elif menu == "📈 Exploratory Data Analysis":
         if os.path.exists("plots/location_defaults_impact.png"):
             st.image("plots/location_defaults_impact.png", caption="Location and Defaults Breakdown", use_container_width=True)
 
-# TAB 4: EXECUTIVE REPORT & Q&A
-elif menu == "📑 Executive Analysis & Q&A":
-    st.subheader("Answers to the 6 Core Questions (Section 8)")
-    
-    questions = [
-        ("1. Can loan amount be predicted from applicant information?",
-         "**Yes, with exceptional empirical precision.** Applicant income, requested loan amount, credit score, collateral asset valuation, and liabilities explain **98.88% of the variance** in sanctioned loan amounts ($R^2 = 0.9888$) using Gradient Boosting Regression."),
-        
-        ("2. Which factors have the greatest influence?",
-         "1. **Requested Loan Amount ($r = 0.99$):** Primary baseline indicator of loan sizing.\n2. **Collateral Asset Value ($r = 0.96$):** Provides recovery security and fixes maximum LTV.\n3. **Existing Liabilities ($r = 0.69$):** Direct cash flow deduction on monthly debt capacity.\n4. **Credit Score (CIBIL):** Determines risk category and sanction haircuts.\n5. **Applicant Income:** Determines base serviceability."),
-        
-        ("3. Which regression algorithm performs best?",
-         "**Gradient Boosting Regression** achieved the highest test $R^2$ (0.9888) and lowest RMSE (₹3.91 Lakhs). It sequentially fits residual errors of previous trees, capturing complex financial interactions and credit tier cutoffs."),
-        
-        ("4. Which model has the lowest RMSE?",
-         "**Gradient Boosting Regression** with **RMSE = ₹3,91,191.33**, outperforming Random Forest (₹3.99L), Decision Tree (₹4.34L), and Linear Regression (₹4.56L)."),
-        
-        ("5. How accurately can the model predict loan amounts for new applicants?",
-         "On completely unseen test applications (2,000 holdout records), the model exhibits an **MAE of ₹2.50 Lakhs** on loans averaging ₹53.4 Lakhs—a relative error rate of **under 4.7%**."),
-        
-        ("6. Can this model assist loan officers?",
-         "**Yes.** It provides instant pre-qualification, eliminates manual underwriting subjectivity, ensures regulatory FOIR adherence, and computes objective credit sanction recommendations in sub-second time.")
-    ]
-    
-    for q, a in questions:
-        with st.expander(f"📌 {q}", expanded=True):
-            st.markdown(a)
 
-    st.markdown("---")
-    st.subheader("Final Project Analysis (Section 7)")
-    st.markdown("""
-    - **Factors Influencing Loan Amount:** Retail credit underwriting is driven by serviceability (income & ongoing EMIs) and loss-given-default collateral (property asset price).
-    - **Comparative Algorithm Insights:** Linear regression achieves a strong baseline ($R^2 = 0.9847$), while ensemble tree models capture edge-case thresholds and step policies with higher accuracy ($R^2 = 0.9888$).
-    - **Prediction Error Analysis:** Errors follow a zero-mean Gaussian distribution with no directional bias.
-    - **Practical Limitations:** Self-employed unverified cash flows, macroeconomic interest rate shifts, and legal title encumbrance require standard credit committee validation.
-    """)
-
-# TAB 5: DOWNLOAD PDF DOCS
-elif menu == "📥 Download PDF Documents":
-    st.subheader("Download Comprehensive Project Documentation (PDF)")
-    st.markdown("All 3 detailed educational and technical explanation documents are available for download:")
-    
-    pdf_files = [
-        ("1. ML Topics Explained (How, Why, When in Simple English)", "ml_topics_explanation.pdf"),
-        ("2. Project Files Explained (How, Why, When in Simple English)", "project_files_explanation.pdf"),
-        ("3. ML Models Explained (How, Why, When in Simple English)", "ml_models_explanation.pdf")
-    ]
-    
-    for title, filename in pdf_files:
-        if os.path.exists(filename):
-            with open(filename, "rb") as f:
-                pdf_bytes = f.read()
-            st.download_button(
-                label=f"📄 Download {title}",
-                data=pdf_bytes,
-                file_name=filename,
-                mime="application/pdf",
-                use_container_width=True
-            )
-        else:
-            st.warning(f"File {filename} is generating...")
