@@ -1,0 +1,66 @@
+{
+    "numerical_features": [
+        "ApplicantIncome",
+        "LoanAmountRequest",
+        "ExistingLiabilities",
+        "Dependents",
+        "CreditScore",
+        "DefaultsCount",
+        "CoApplicant",
+        "AssetValue"
+    ],
+    "categorical_features": [
+        "IncomeStability",
+        "Profession",
+        "EmploymentType",
+        "Location",
+        "ActiveCreditCard",
+        "PropertyLocation"
+    ],
+    "categorical_options": {
+        "IncomeStability": [
+            "Low",
+            "High"
+        ],
+        "Profession": [
+            "Commercial associate",
+            "Working",
+            "Pensioner",
+            "State servant"
+        ],
+        "EmploymentType": [
+            "Sales staff",
+            "Managers",
+            "Laborers",
+            "Core staff",
+            "Drivers",
+            "Other"
+        ],
+        "Location": [
+            "Semi-Urban",
+            "Urban",
+            "Rural"
+        ],
+        "ActiveCreditCard": [
+            "Active",
+            "Inactive",
+            "Unpossessed"
+        ],
+        "PropertyLocation": [
+            "Semi-Urban",
+            "Urban",
+            "Rural"
+        ]
+    },
+    "best_model": "Gradient Boosting Regression",
+    "models_compared": [
+        "Linear Regression",
+        "Polynomial Regression",
+        "Decision Tree Regression",
+        "Random Forest Regression",
+        "Gradient Boosting Regression",
+        "Support Vector Regression"
+    ],
+    "test_records_count": 2000,
+    "train_records_count": 8000
+}
