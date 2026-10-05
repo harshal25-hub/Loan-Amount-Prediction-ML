@@ -18,10 +18,8 @@ LOADED_MODELS = {}
 MODEL_FILES = {
     'Gradient Boosting Regression': 'gradient_boosting_regression.joblib',
     'Random Forest Regression': 'random_forest_regression.joblib',
-    'Polynomial Regression': 'polynomial_regression.joblib',
     'Decision Tree Regression': 'decision_tree_regression.joblib',
-    'Linear Regression': 'linear_regression.joblib',
-    'Support Vector Regression': 'support_vector_regression.joblib'
+    'Linear Regression': 'linear_regression.joblib'
 }
 
 def get_model(model_name='Gradient Boosting Regression'):

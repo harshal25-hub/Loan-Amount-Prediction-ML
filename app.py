@@ -66,7 +66,7 @@ st.sidebar.image("https://img.icons8.com/fluency/96/bank-building.png", width=70
 st.sidebar.title("Navigation")
 menu = st.sidebar.radio(
     "Choose View:",
-    ["💼 Loan Predictor", "📊 6-Model Benchmark", "📈 Exploratory Data Analysis", "📑 Executive Analysis & Q&A", "📥 Download PDF Documents"]
+    ["💼 Loan Predictor", "📊 4-Model Benchmark", "📈 Exploratory Data Analysis", "📑 Executive Analysis & Q&A", "📥 Download PDF Documents"]
 )
 
 st.sidebar.markdown("---")
@@ -146,7 +146,6 @@ PROFILES = {
 if menu == "💼 Loan Predictor":
     st.subheader("Enter Applicant Information")
     
-    # Profile auto-fill
     selected_profile = st.selectbox("Quick Demo Profile Fillers:", list(PROFILES.keys()))
     default_vals = PROFILES.get(selected_profile) or {}
 
@@ -246,10 +245,8 @@ if menu == "💼 Loan Predictor":
                 [
                     "Gradient Boosting Regression",
                     "Random Forest Regression",
-                    "Polynomial Regression",
                     "Decision Tree Regression",
-                    "Linear Regression",
-                    "Support Vector Regression"
+                    "Linear Regression"
                 ]
             )
 
@@ -275,7 +272,6 @@ if menu == "💼 Loan Predictor":
         
         result = predict_loan_amount(applicant_data, model_name=model_selected)
         
-        # Display Hero Card
         st.markdown(f"""
         <div class="metric-card">
             <span class="pill-badge pill-{result['risk_badge']}">{result['risk_category']}</span>
@@ -290,7 +286,6 @@ if menu == "💼 Loan Predictor":
         </div>
         """, unsafe_allow_html=True)
         
-        # Financial Capacity Breakdown
         m1, m2, m3 = st.columns(3)
         with m1:
             st.metric("Monthly Income", format_inr(applicant_income))
@@ -299,7 +294,6 @@ if menu == "💼 Loan Predictor":
         with m3:
             st.metric("Current FOIR", result['current_foir_percent'])
 
-        # Multi-model comparison table
         st.markdown("#### 🔍 Algorithmic Comparison for this Applicant")
         comp_rows = []
         for m_name, info in result['all_model_predictions'].items():
@@ -312,18 +306,16 @@ if menu == "💼 Loan Predictor":
             })
         st.dataframe(pd.DataFrame(comp_rows), hide_index=True, use_container_width=True)
 
-# TAB 2: 6-MODEL BENCHMARK
-elif menu == "📊 6-Model Benchmark":
-    st.subheader("6-Model Comparative Study & Benchmark")
-    st.markdown("All 6 regression models were trained with standard preprocessing and evaluated on an unseen 20% holdout test set (2,000 real records):")
+# TAB 2: 4-MODEL BENCHMARK
+elif menu == "📊 4-Model Benchmark":
+    st.subheader("4-Model Comparative Study & Benchmark")
+    st.markdown("All 4 regression models were trained with standard preprocessing and evaluated on an unseen 20% holdout test set (2,000 real records):")
     
     benchmark_data = [
         {"Rank": "#1", "Model": "Gradient Boosting Regression", "MAE": "₹2,50,815.84", "MSE": "1.53e+11", "RMSE": "₹3,91,191.33", "Test R²": 0.9888, "Train R²": 0.9948, "Status": "Optimal (Best)"},
         {"Rank": "#2", "Model": "Random Forest Regression", "MAE": "₹2,58,950.02", "MSE": "1.60e+11", "RMSE": "₹3,99,623.06", "Test R²": 0.9883, "Train R²": 0.9938, "Status": "Robust Ensemble"},
-        {"Rank": "#3", "Model": "Polynomial Regression (Deg-2)", "MAE": "₹2,81,828.43", "MSE": "1.85e+11", "RMSE": "₹4,30,132.33", "Test R²": 0.9864, "Train R²": 0.9884, "Status": "High Balance"},
-        {"Rank": "#4", "Model": "Decision Tree Regression", "MAE": "₹2,74,960.44", "MSE": "1.89e+11", "RMSE": "₹4,34,535.01", "Test R²": 0.9861, "Train R²": 0.9900, "Status": "Step Non-Linearity"},
-        {"Rank": "#5", "Model": "Linear Regression", "MAE": "₹3,04,394.08", "MSE": "2.08e+11", "RMSE": "₹4,56,024.85", "Test R²": 0.9847, "Train R²": 0.9864, "Status": "Fast Baseline"},
-        {"Rank": "#6", "Model": "Support Vector Regression (SVR)", "MAE": "₹3,32,929.53", "MSE": "2.86e+11", "RMSE": "₹5,34,882.84", "Test R²": 0.9790, "Train R²": 0.9967, "Status": "Target Scaled"}
+        {"Rank": "#3", "Model": "Decision Tree Regression", "MAE": "₹2,74,960.44", "MSE": "1.89e+11", "RMSE": "₹4,34,535.01", "Test R²": 0.9861, "Train R²": 0.9900, "Status": "Step Non-Linearity"},
+        {"Rank": "#4", "Model": "Linear Regression", "MAE": "₹3,04,394.08", "MSE": "2.08e+11", "RMSE": "₹4,56,024.85", "Test R²": 0.9847, "Train R²": 0.9864, "Status": "Fast Baseline"}
     ]
     st.table(pd.DataFrame(benchmark_data))
 
@@ -374,7 +366,7 @@ elif menu == "📑 Executive Analysis & Q&A":
          "**Gradient Boosting Regression** achieved the highest test $R^2$ (0.9888) and lowest RMSE (₹3.91 Lakhs). It sequentially fits residual errors of previous trees, capturing complex financial interactions and credit tier cutoffs."),
         
         ("4. Which model has the lowest RMSE?",
-         "**Gradient Boosting Regression** with **RMSE = ₹3,91,191.33**, outperforming Random Forest (₹3.99L), Polynomial Regression (₹4.30L), Decision Tree (₹4.34L), Linear Regression (₹4.56L), and SVR (₹5.34L)."),
+         "**Gradient Boosting Regression** with **RMSE = ₹3,91,191.33**, outperforming Random Forest (₹3.99L), Decision Tree (₹4.34L), and Linear Regression (₹4.56L)."),
         
         ("5. How accurately can the model predict loan amounts for new applicants?",
          "On completely unseen test applications (2,000 holdout records), the model exhibits an **MAE of ₹2.50 Lakhs** on loans averaging ₹53.4 Lakhs—a relative error rate of **under 4.7%**."),
@@ -391,7 +383,7 @@ elif menu == "📑 Executive Analysis & Q&A":
     st.subheader("Final Project Analysis (Section 7)")
     st.markdown("""
     - **Factors Influencing Loan Amount:** Retail credit underwriting is driven by serviceability (income & ongoing EMIs) and loss-given-default collateral (property asset price).
-    - **Comparative Algorithm Insights:** Linear regression achieves a strong baseline ($R^2 = 0.9847$), but ensemble tree models capture edge-case thresholds and step policies with higher accuracy ($R^2 = 0.9888$).
+    - **Comparative Algorithm Insights:** Linear regression achieves a strong baseline ($R^2 = 0.9847$), while ensemble tree models capture edge-case thresholds and step policies with higher accuracy ($R^2 = 0.9888$).
     - **Prediction Error Analysis:** Errors follow a zero-mean Gaussian distribution with no directional bias.
     - **Practical Limitations:** Self-employed unverified cash flows, macroeconomic interest rate shifts, and legal title encumbrance require standard credit committee validation.
     """)

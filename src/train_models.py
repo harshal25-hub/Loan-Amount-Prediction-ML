@@ -6,15 +6,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder, PolynomialFeatures
-from sklearn.compose import ColumnTransformer, TransformedTargetRegressor
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.svm import SVR
 import joblib
 
 def build_and_evaluate_models(data_path, output_dir, plots_dir):
@@ -48,55 +47,36 @@ def build_and_evaluate_models(data_path, output_dir, plots_dir):
         ]
     )
     
-    # 6 Algorithms:
+    # 4 Core Regression Algorithms:
     # 1. Linear Regression
     lr_pipeline = Pipeline([
         ('preprocessor', preprocessor),
         ('regressor', LinearRegression())
     ])
     
-    # 2. Polynomial Regression (Degree 2 with Ridge regularizer)
-    poly_pipeline = Pipeline([
-        ('preprocessor', preprocessor),
-        ('poly', PolynomialFeatures(degree=2, include_bias=False)),
-        ('regressor', Ridge(alpha=100.0))
-    ])
-    
-    # 3. Decision Tree Regression
+    # 2. Decision Tree Regression
     dt_pipeline = Pipeline([
         ('preprocessor', preprocessor),
         ('regressor', DecisionTreeRegressor(max_depth=9, min_samples_leaf=10, random_state=42))
     ])
     
-    # 4. Random Forest Regression
+    # 3. Random Forest Regression
     rf_pipeline = Pipeline([
         ('preprocessor', preprocessor),
         ('regressor', RandomForestRegressor(n_estimators=100, max_depth=12, min_samples_leaf=4, random_state=42, n_jobs=-1))
     ])
     
-    # 5. Gradient Boosting Regression
+    # 4. Gradient Boosting Regression
     gb_pipeline = Pipeline([
         ('preprocessor', preprocessor),
         ('regressor', GradientBoostingRegressor(n_estimators=150, learning_rate=0.08, max_depth=5, random_state=42))
     ])
     
-    # 6. Support Vector Regression (SVR with target scaling)
-    svr_base = Pipeline([
-        ('preprocessor', preprocessor),
-        ('svr', SVR(kernel='rbf', C=30.0, epsilon=0.05))
-    ])
-    svr_pipeline = TransformedTargetRegressor(
-        regressor=svr_base,
-        transformer=StandardScaler()
-    )
-    
     models = {
         'Linear Regression': lr_pipeline,
-        'Polynomial Regression': poly_pipeline,
         'Decision Tree Regression': dt_pipeline,
         'Random Forest Regression': rf_pipeline,
-        'Gradient Boosting Regression': gb_pipeline,
-        'Support Vector Regression': svr_pipeline
+        'Gradient Boosting Regression': gb_pipeline
     }
     
     results = {}
@@ -104,8 +84,14 @@ def build_and_evaluate_models(data_path, output_dir, plots_dir):
     test_predictions = {}
     
     print("\n" + "="*80)
-    print("TRAINING AND EVALUATING 6 REGRESSION MODELS (REAL ONLINE DATASET)")
+    print("TRAINING AND EVALUATING 4 REGRESSION MODELS (REAL ONLINE DATASET)")
     print("="*80)
+    
+    # Remove old model files if they exist
+    for old_file in ['polynomial_regression.joblib', 'support_vector_regression.joblib']:
+        old_path = os.path.join(output_dir, old_file)
+        if os.path.exists(old_path):
+            os.remove(old_path)
     
     for name, model in models.items():
         print(f"\nTraining [{name}]...")
@@ -188,33 +174,33 @@ def generate_comparison_plots(results, y_test, test_predictions, best_model_name
     r2_vals = [results[m]['R2'] for m in model_names]
     
     # 1. Comparative Metrics Bar Chart
-    fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+    fig, axes = plt.subplots(1, 2, figsize=(15, 5.5))
     x = np.arange(len(model_names))
     width = 0.35
     
     axes[0].bar(x - width/2, rmse_vals, width, label='RMSE (INR Lakhs)', color='#ef4444', alpha=0.85)
     axes[0].bar(x + width/2, mae_vals, width, label='MAE (INR Lakhs)', color='#3b82f6', alpha=0.85)
     axes[0].set_ylabel('Error in INR Lakhs', fontsize=12)
-    axes[0].set_title('Error Comparison (RMSE vs MAE) Across Models', fontsize=14, fontweight='bold', pad=12)
+    axes[0].set_title('Error Comparison (RMSE vs MAE)', fontsize=14, fontweight='bold', pad=12)
     axes[0].set_xticks(x)
-    axes[0].set_xticklabels([m.replace(' Regression', '') for m in model_names], rotation=25, ha='right', fontsize=10)
+    axes[0].set_xticklabels([m.replace(' Regression', '') for m in model_names], rotation=15, ha='right', fontsize=10)
     axes[0].legend(fontsize=11)
     
     colors = ['#10b981' if m == best_model_name else '#64748b' for m in model_names]
-    bars = axes[1].bar(x, r2_vals, width=0.5, color=colors)
+    bars = axes[1].bar(x, r2_vals, width=0.45, color=colors)
     axes[1].set_ylabel('R² Score', fontsize=12)
-    axes[1].set_title('R² Coefficient of Determination by Model', fontsize=14, fontweight='bold', pad=12)
+    axes[1].set_title('R² Score by Model', fontsize=14, fontweight='bold', pad=12)
     axes[1].set_xticks(x)
-    axes[1].set_xticklabels([m.replace(' Regression', '') for m in model_names], rotation=25, ha='right', fontsize=10)
-    axes[1].set_ylim([0.8, 1.02])
+    axes[1].set_xticklabels([m.replace(' Regression', '') for m in model_names], rotation=15, ha='right', fontsize=10)
+    axes[1].set_ylim([0.95, 1.005])
     
     for bar in bars:
         height = bar.get_height()
-        axes[1].annotate(f'{height:.3f}',
+        axes[1].annotate(f'{height:.4f}',
                          xy=(bar.get_x() + bar.get_width() / 2, height),
                          xytext=(0, 3),
                          textcoords="offset points",
-                         ha='center', va='bottom', fontsize=9, fontweight='bold')
+                         ha='center', va='bottom', fontsize=9.5, fontweight='bold')
                          
     plt.tight_layout()
     plt.savefig(os.path.join(plots_dir, 'model_comparison_metrics.png'), dpi=300)

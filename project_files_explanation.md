@@ -120,13 +120,11 @@ The core machine learning engine of the project. It builds pipelines, trains all
 #### 2. HOW does it work?
 1. **Splits Data:** 80% Training ($N=8,000$), 20% Testing ($N=2,000$).
 2. **Defines Preprocessing:** A `ColumnTransformer` that standardizes numerical features (`StandardScaler`) and one-hot encodes categories (`OneHotEncoder`).
-3. **Builds 6 Model Pipelines:**
+3. **Builds 4 Model Pipelines:**
    - Linear Regression
-   - Polynomial Regression (Degree 2 with Ridge regularizer)
    - Decision Tree Regression
    - Random Forest Regression
    - Gradient Boosting Regression
-   - Support Vector Regression (SVR with target scaling)
 4. **Calculates Evaluation Metrics:** Computes MAE, MSE, RMSE, and $R^2$ on both training and test sets.
 5. **Ranks Models:** Identifies the champion model with the lowest RMSE.
 6. **Saves Artifacts:** Saves models as `.joblib` files, writes benchmark JSON files, and generates evaluation charts (`actual_vs_predicted.png`, `residuals_distribution.png`, `feature_importance.png`, `model_comparison_metrics.png`).

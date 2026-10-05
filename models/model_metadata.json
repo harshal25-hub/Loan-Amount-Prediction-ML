@@ -55,11 +55,9 @@
     "best_model": "Gradient Boosting Regression",
     "models_compared": [
         "Linear Regression",
-        "Polynomial Regression",
         "Decision Tree Regression",
         "Random Forest Regression",
-        "Gradient Boosting Regression",
-        "Support Vector Regression"
+        "Gradient Boosting Regression"
     ],
     "test_records_count": 2000,
     "train_records_count": 8000
